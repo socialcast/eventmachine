@@ -1,5 +1,3 @@
-puts "HELLO FROM thatothermitch-eventmachine"
-
 if RUBY_PLATFORM =~ /java/
   require 'java'
   require 'jeventmachine'
