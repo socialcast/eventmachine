@@ -115,10 +115,11 @@ are provided with the package, primarily to serve as examples. The real goal
 of EventMachine is to enable programs to easily interface with other programs
 using TCP/IP, especially if custom protocols are required.
   EOD
-  begin
-    require 'lib/em/version'
-  rescue
+
+  if defined?(:require_relative)
     require_relative 'lib/em/version'
+  else
+    require 'lib/em/version'
   end
   s.version = EventMachine::VERSION
 end
