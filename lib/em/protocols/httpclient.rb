@@ -188,12 +188,7 @@ module EventMachine
             if ary.length == 2
               data = ary.last
               if ary.first == ""
-                if (@content_length and @content_length > 0) || @connection_close
-                  @read_state = :content
-                else
-                  dispatch_response
-                  @read_state = :base
-                end
+                @read_state = :content
               else
                 @headers << ary.first
                 if @headers.length == 1
@@ -229,8 +224,15 @@ module EventMachine
                 @read_state = :base
               end
             else
-              @content << data
-              data = ""
+              # hack *approximate* support for chunked encoding
+              lines = data.split(/[\r\n]+/)
+              data =""
+              data_lines = lines.select{ |line| !/^[a-zA-Z0-9]+$/.match(line) }
+              data_lines.each { |data_line| @content << data_line }
+              if "0" == lines.last
+                dispatch_response
+                @read_state = :base
+              end
             end
           end
         end
